@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Lunchclub</title>
+  <style>
+    body { background: #222; font-family: Arial; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .box { background: #111; padding: 2rem; border-radius: 10px; width: 300px; }
+    button { padding: 8px 12px; background: teal; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Your Dashboard</h2>
+    <div id="userInfo">Loading...</div>
+    <br />
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "login.html";
+
+    fetch("http://localhost:5000/api/user", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const meetLinks = {
+        engineering: "https://meet.google.com/dxq-ibvm-yoe",
+        doctor: "https://meet.google.com/ysq-ppvh-asu",
+        arts: "https://meet.google.com/wed-uocy-wec",
+        law: "https://meet.google.com/cwh-eeuu-jhw",
+      };
+
+      document.getElementById("userInfo").innerHTML = `
+        <p><strong>Name:</strong> ${data.name}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Profession:</strong> ${data.profession}</p>
+        <p><strong>Role:</strong> ${data.role}</p>
+        <p><strong>Matched With:</strong></p>
+        <ul>
+          ${
+            Array.isArray(data.matchedWith) && data.matchedWith.length > 0
+              ? data.matchedWith.map(
+                  (match) => `
+                    <li>
+                      ${match.name} (${match.profession}) 
+                      ${
+                        meetLinks[match.profession.toLowerCase()]
+                          ? `<a href="${meetLinks[match.profession.toLowerCase()]}" target="_blank">[Join Meet]</a>`
+                          : ""
+                      }
+                    </li>`
+                ).join("")
+              : "<li>No matches yet</li>"
+          }
+        </ul>
+      `;
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      document.getElementById("userInfo").innerText = "Failed to load user info.";
+    });
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

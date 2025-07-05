@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 2rem;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+    }
+
+    input, select, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    input, select {
+      background: #f0f0f0;
+      color: #000;
+    }
+
+    button {
+      background-color: #00c3ff;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    a {
+      color: #00c3ff;
+      font-size: 14px;
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Name" required><br>
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <input type="text" id="profession" placeholder="Profession" required><br>
+      <select id="role">
+        <option value="student">Student</option>
+        <option value="expert">Expert</option>
+      </select><br>
+      <button type="submit">Register</button>
+    </form>
+    <a href="login.html">Already have an account? Login here</a>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const res = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+          profession: document.getElementById("profession").value,
+          role: document.getElementById("role").value
+        })
+      });
+      const data = await res.json();
+      alert(data.message);
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
