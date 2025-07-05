@@ -21,7 +21,7 @@
     const token = localStorage.getItem("token");
     if (!token) window.location.href = "login.html";
 
-    fetch("http://localhost:5000/api/user", {
+    fetch("https://lunchclub-backend.onrender.com/api/user", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
